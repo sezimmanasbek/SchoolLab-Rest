@@ -2,6 +2,7 @@ package com.cydeo.client;
 
 import com.cydeo.dto.weather.WeatherDTOClient;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -9,5 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface WeatherClient {
 
     @GetMapping("/current")
-    WeatherDTOClient getWeather(@RequestParam("access_key") String key, @RequestParam("query") String state);
+    WeatherDTOClient getWeatherC(@RequestParam(value = "access_key") String key,
+                                 @RequestParam(value = "query") String state);
 }

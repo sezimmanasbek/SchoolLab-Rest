@@ -1,5 +1,6 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.client.FlagClient;
 import com.cydeo.client.WeatherClient;
 import com.cydeo.dto.AddressDTO;
 import com.cydeo.dto.weather.WeatherDTOClient;
@@ -17,16 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class AddressServiceImpl implements AddressService {
 
-    @Value("{$access_key}")
-    String access_key;
+    @Value("${access_key}")
+    private String access_key;
     private final AddressRepository addressRepository;
     private final MapperUtil mapperUtil;
     private final WeatherClient weatherClient;
+    private final FlagClient flagClient;
 
-    public AddressServiceImpl(AddressRepository addressRepository, MapperUtil mapperUtil, WeatherClient weatherClient) {
+    public AddressServiceImpl(AddressRepository addressRepository, MapperUtil mapperUtil, WeatherClient weatherClient, FlagClient flagClient) {
         this.addressRepository = addressRepository;
         this.mapperUtil = mapperUtil;
         this.weatherClient = weatherClient;
+        this.flagClient = flagClient;
     }
 
     @Override
@@ -47,8 +50,13 @@ public class AddressServiceImpl implements AddressService {
         Address foundAddress = addressRepository.findById(id)
                 .orElseThrow(() -> new Exception("No Address Found!"));
         AddressDTO address = mapperUtil.convert(foundAddress, new AddressDTO());
-        address.setCurrentTemperature(getWeather(address.getState()).getCurrent().getTemperature());
+        address.setCurrentTemperature(getWeather(address.getCity()).getCurrent().getTemperature());
+        address.setFlag(getCountryFlag(address.getCountry()));
         return address;
+    }
+
+    private String getCountryFlag(String country) {
+       return flagClient.getFlag(country).get(0).getFlags().getPng();
     }
 
     @Override
@@ -84,7 +92,7 @@ public class AddressServiceImpl implements AddressService {
 
     private WeatherDTOClient getWeather(String state){
 
-       return weatherClient.getWeather(access_key,state);
+       return weatherClient.getWeatherC(access_key,state);
 
     }
 

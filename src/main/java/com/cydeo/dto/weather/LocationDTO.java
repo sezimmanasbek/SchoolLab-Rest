@@ -8,7 +8,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-public class Location {
+public class LocationDTO {
 
 
     private String name;

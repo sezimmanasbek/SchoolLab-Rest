@@ -8,7 +8,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
-public class Request {
+public class RequestDTO {
 
     private String type;
     private String query;
